@@ -37,7 +37,7 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         return new ModuleImplementation(driveController, steerContainer);
     }
 
-    private static class ModuleImplementation implements SwerveModule {
+    private class ModuleImplementation implements SwerveModule {
         private final DriveController driveController;
         private final SteerController steerController;
 
@@ -59,6 +59,16 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         @Override
         public ModuleConfiguration getModuleConfiguration() {
             return moduleConfiguration;
+        }
+
+        @Override
+        public DriveController getDriveController() {
+            return driveController;
+        }
+
+        @Override
+        public SteerController getSteerController() {
+            return steerController;
         }
 
         @Override

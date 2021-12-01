@@ -1,6 +1,5 @@
 package frc.swervelib;
 
-@FunctionalInterface
 public interface AbsoluteEncoder {
     /**
      * Gets the current angle reading of the encoder in radians.

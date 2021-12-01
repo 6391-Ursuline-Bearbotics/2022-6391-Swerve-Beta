@@ -513,8 +513,8 @@ public final class Mk4SwerveModuleHelper {
 
     public static SwerveModuleSim createSim(SwerveModule module) {
         ModuleConfiguration modConfig = module.getModuleConfiguration();
-        return new SwerveModuleSim(modConfig.getSteerMotor(), 
-                                   modConfig.getDriveMotor(), 
+        return new SwerveModuleSim(module.getSteerController().getSteerMotor(),
+                                   module.getDriveController().getDriveMotor(),
                                    modConfig.getWheelDiameter() / 2,
                                    1 / modConfig.getSteerReduction(),
                                    1 / modConfig.getDriveReduction(),

@@ -3,6 +3,8 @@ package frc.swervelib.rev;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.swervelib.DriveController;
 import frc.swervelib.DriveControllerFactory;
 import frc.swervelib.ModuleConfiguration;
@@ -78,6 +80,11 @@ public final class NeoDriveControllerFactoryBuilder {
         @Override
         public void setReferenceVoltage(double voltage) {
             motor.setVoltage(voltage);
+        }
+
+        @Override
+        public DCMotor getDriveMotor() {
+            return DCMotor.getNEO(1);
         }
 
         @Override

@@ -11,13 +11,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////  Configured Constants
-    //// - These are tied to the specifics on how your mechanical team,
-    ////   electrical team, and the game design committee did their work.
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ROBOT PHYSICAL CONSTANTS
@@ -35,53 +28,16 @@ public class Constants {
     static public final double MAX_TRANSLATE_ACCEL_MPS2 = MAX_FWD_REV_SPEED_MPS/0.25; //0-full time of 0.25 second
     static public final double MAX_ROTATE_ACCEL_RAD_PER_SEC_2 = MAX_ROTATE_SPEED_RAD_PER_SEC/0.25; //0-full time of 0.25 second
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ROBOT ELECTRICAL CONSTANTS - update these to match how you wired your robot.
-    // PWM Bank
-    static public final int FL_WHEEL_MOTOR_IDX = 0;
-    static public final int FL_AZMTH_MOTOR_IDX = 1;
-    static public final int FR_WHEEL_MOTOR_IDX = 2;
-    static public final int FR_AZMTH_MOTOR_IDX = 3;
-    static public final int BL_WHEEL_MOTOR_IDX = 4;
-    static public final int BL_AZMTH_MOTOR_IDX = 5;
-    static public final int BR_WHEEL_MOTOR_IDX = 6;
-    static public final int BR_AZMTH_MOTOR_IDX = 7;
-    //static public final int UNUSED = 8;
-    //static public final int UNUSED = 9;
-    // DIO Bank
-    static public final int FL_WHEEL_ENC_A_IDX = 0;
-    static public final int FL_WHEEL_ENC_B_IDX = 1;
-    static public final int FL_AZMTH_ENC_A_IDX = 2;
-    static public final int FL_AZMTH_ENC_B_IDX = 3;
-    static public final int FR_WHEEL_ENC_A_IDX = 4;
-    static public final int FR_WHEEL_ENC_B_IDX = 5;
-    static public final int FR_AZMTH_ENC_A_IDX = 6;
-    static public final int FR_AZMTH_ENC_B_IDX = 7;
-    static public final int BL_WHEEL_ENC_A_IDX = 8;
-    static public final int BL_WHEEL_ENC_B_IDX = 9;
-    static public final int BL_AZMTH_ENC_A_IDX = 10;
-    static public final int BL_AZMTH_ENC_B_IDX = 11;
-    static public final int BR_WHEEL_ENC_A_IDX = 12;
-    static public final int BR_WHEEL_ENC_B_IDX = 13;
-    static public final int BR_AZMTH_ENC_A_IDX = 14;
-    static public final int BR_AZMTH_ENC_B_IDX = 15;
-    //static public final int UNUSED = 16;
-    //static public final int UNUSED = 17;
-    //static public final int UNUSED = 18;
-    //static public final int UNUSED = 19;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // SENSOR CONSTANTS
     // Sensor-related constants - pulled from datasheets for the sensors and gearboxes
     static public final int ENC_PULSE_PER_REV = 1024;
     static public final int WHEEL_ENC_COUNTS_PER_WHEEL_REV = ENC_PULSE_PER_REV;  //Assume 1-1 gearing for now
-    static public final int AZMTH_ENC_COUNTS_PER_MODULE_REV = ENC_PULSE_PER_REV; //Assume 1-1 gearing for now
+    static public final int steer_ENC_COUNTS_PER_MODULE_REV = ENC_PULSE_PER_REV; //Assume 1-1 gearing for now
     static public final double WHEEL_ENC_WHEEL_REVS_PER_COUNT  = 1.0/((double)(Constants.WHEEL_ENC_COUNTS_PER_WHEEL_REV));
-    static public final double AZMTH_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(Constants.AZMTH_ENC_COUNTS_PER_MODULE_REV));
+    static public final double steer_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(Constants.steer_ENC_COUNTS_PER_MODULE_REV));
     // Vision Camera
     static public final String PHOTON_CAM_NAME = "MainCamera";
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // FIELD PHYSICAL CONSTANTS
@@ -144,7 +100,5 @@ public class Constants {
     // Nominal Periodic code execution rates
     static public final double SIM_SAMPLE_RATE_SEC = 0.001;
     static public final double CTRLS_SAMPLE_RATE_SEC = 0.02;
-
-
 
 }

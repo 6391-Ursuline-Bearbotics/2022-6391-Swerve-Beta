@@ -2,6 +2,7 @@ package frc.swervelib.rev;
 
 import com.revrobotics.*;
 import frc.swervelib.*;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static frc.swervelib.rev.RevUtils.checkNeoError;
@@ -155,6 +156,11 @@ public final class NeoSteerControllerFactoryBuilder {
             this.referenceAngleRadians = referenceAngleRadians;
 
             controller.setReference(adjustedReferenceAngleRadians, ControlType.kPosition);
+        }
+
+        @Override
+        public DCMotor getSteerMotor() {
+            return DCMotor.getNEO(1);
         }
 
         @Override

@@ -6,8 +6,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 
 public class SwerveModuleSim {
 
-    private SimpleMotorWithMassModel azmthMotor;
-    private MotorGearboxWheelSim wheelMotor;
+    private SimpleMotorWithMassModel steerMotor;
+    private MotorGearboxWheelSim driveMotor;
 
     private final double azimuthEncGearRatio;    //Motor-to-azimuth-encoder reduction
     private final double wheelEncGearRatio;      //Motor-to-wheel-encoder reduction
@@ -18,18 +18,18 @@ public class SwerveModuleSim {
     Pose2d prevModulePose = null;
     Pose2d curModulePose  = null;
     double curLinearSpeed_mps = 0; //Positive = in curAngle_deg, Negative = opposite of curAngle_deg
-    Rotation2d curAzmthAngle = Rotation2d.fromDegrees(0); //0 = toward front, 90 = toward left, 180 = toward back, 270 = toward right
+    Rotation2d cursteerAngle = Rotation2d.fromDegrees(0); //0 = toward front, 90 = toward left, 180 = toward back, 270 = toward right
 
     double crossTreadFricForceMag = 0;
     double crossTreadVelMag = 0;
     double crossTreadForceMag = 0;
 
     double wheelVoltage;
-    double azmthVoltage;
+    double steerVoltage;
 
     public SwerveModuleSim(
         DCMotor azimuthMotor,
-        DCMotor wheelMotor, 
+        DCMotor driveMotor, 
         double wheelRadius_m,
         double azimuthGearRatio,      // Motor rotations per one azimuth module rotation. Should be greater than zero
         double wheelGearRatio,        // Motor rotations per one wheel rotation. Should be greater than zero
@@ -40,8 +40,8 @@ public class SwerveModuleSim {
         double moduleNormalForce,
         double azimuthEffectiveMOI
     ){
-        this.azmthMotor = new SimpleMotorWithMassModel(azimuthMotor, azimuthGearRatio, azimuthEffectiveMOI);
-        this.wheelMotor = new MotorGearboxWheelSim(wheelMotor, wheelGearRatio, wheelRadius_m, wheelGearboxLossFactor);
+        this.steerMotor = new SimpleMotorWithMassModel(azimuthMotor, azimuthGearRatio, azimuthEffectiveMOI);
+        this.driveMotor = new MotorGearboxWheelSim(driveMotor, wheelGearRatio, wheelRadius_m, wheelGearboxLossFactor);
      
         this.azimuthEncGearRatio   = azimuthEncGearRatio; 
         this.wheelEncGearRatio     = wheelEncGearRatio;   
@@ -49,38 +49,38 @@ public class SwerveModuleSim {
         this.treadKineticFricForce = treadKineticCoefFric*moduleNormalForce; 
     }
 
-    public void setInputVoltages(double wheelVoltage, double azmthVoltage){
+    public void setInputVoltages(double wheelVoltage, double steerVoltage){
         this.wheelVoltage = wheelVoltage;
-        this.azmthVoltage = azmthVoltage;
+        this.steerVoltage = steerVoltage;
     }
 
     public double getAzimuthEncoderPositionRev(){
-        return azmthMotor.getMechanismPosition_Rev() * azimuthEncGearRatio;
+        return steerMotor.getMechanismPosition_Rev() * azimuthEncGearRatio;
     }
 
     public double getWheelEncoderPositionRev(){
-        return wheelMotor.getPosition_Rev() * wheelEncGearRatio;
+        return driveMotor.getPosition_Rev() * wheelEncGearRatio;
     }
 
     void reset(Pose2d initModulePose){
         prevModulePose = curModulePose = initModulePose;
         curLinearSpeed_mps = 0;
-        curAzmthAngle = Rotation2d.fromDegrees(0);
+        cursteerAngle = Rotation2d.fromDegrees(0);
     }
 
     void update(double dtSeconds){
 
         Vector2d azimuthUnitVec = new Vector2d(1,0);
-        azimuthUnitVec.rotate(curAzmthAngle.getDegrees());
+        azimuthUnitVec.rotate(cursteerAngle.getDegrees());
 
         // Assume the wheel does not lose traction along its wheel direction (on-tread)
         double velocityAlongAzimuth = getModuleRelativeTranslationVelocity(dtSeconds).dot(azimuthUnitVec);
 
-        wheelMotor.update(velocityAlongAzimuth, wheelVoltage, dtSeconds);
-        azmthMotor.update(azmthVoltage, dtSeconds);
+        driveMotor.update(velocityAlongAzimuth, wheelVoltage, dtSeconds);
+        steerMotor.update(steerVoltage, dtSeconds);
 
         // Assume idealized azimuth control - no "twist" force at contact patch from friction or robot motion.
-        curAzmthAngle = Rotation2d.fromDegrees(azmthMotor.getMechanismPosition_Rev() * 360);
+        cursteerAngle = Rotation2d.fromDegrees(steerMotor.getMechanismPosition_Rev() * 360);
     }
 
     
@@ -104,7 +104,7 @@ public class SwerveModuleSim {
 
         //Project net force onto cross-tread vector
         Vector2d crossTreadUnitVector = new Vector2d(0,1);
-        crossTreadUnitVector.rotate(curAzmthAngle.getDegrees());
+        crossTreadUnitVector.rotate(cursteerAngle.getDegrees());
         crossTreadVelMag = getModuleRelativeTranslationVelocity(dtSeconds).dot(crossTreadUnitVector);
         crossTreadForceMag = netForce_in.getVector2d().dot(crossTreadUnitVector);
 
@@ -128,7 +128,7 @@ public class SwerveModuleSim {
         
     /** Gets the modules on-axis (along wheel direction) force, which comes from the rotation of the motor. */
     ForceAtPose2d getWheelMotiveForce(){
-        return new ForceAtPose2d(new Force2d(wheelMotor.getGroundForce_N(), curAzmthAngle), curModulePose);
+        return new ForceAtPose2d(new Force2d(driveMotor.getGroundForce_N(), cursteerAngle), curModulePose);
     }
 
     /** Set the motion of each module in the field reference frame */

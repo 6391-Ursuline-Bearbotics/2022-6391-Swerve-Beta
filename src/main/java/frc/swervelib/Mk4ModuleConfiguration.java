@@ -2,6 +2,8 @@ package frc.swervelib;
 
 import java.util.Objects;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+
 /**
  * Additional Mk4 module configuration parameters.
  * <p>
@@ -12,6 +14,9 @@ public class Mk4ModuleConfiguration {
     private double nominalVoltage = 12.0;
     private double driveCurrentLimit = 80.0;
     private double steerCurrentLimit = 20.0;
+
+    private DCMotor driveMotor;
+    private DCMotor steerMotor;
 
     public double getNominalVoltage() {
         return nominalVoltage;
@@ -37,6 +42,34 @@ public class Mk4ModuleConfiguration {
         this.steerCurrentLimit = steerCurrentLimit;
     }
 
+    /**
+     * Gets the type of the drive motor.
+     */
+    public DCMotor getDriveMotor() {
+        return driveMotor;
+    }
+
+    /**
+     * Gets the type of the steer motor.
+     */
+    public DCMotor getSteerMotor() {
+        return steerMotor;
+    }
+
+    /**
+     * Sets the type of the drive motor.
+     */
+    public void setDriveMotor(DCMotor motor) {
+        driveMotor = motor;
+    }
+
+    /**
+     * Sets the type of the steer motor.
+     */
+    public void setSteerMotor(DCMotor motor) {
+        steerMotor = motor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,6 +89,8 @@ public class Mk4ModuleConfiguration {
                 "nominalVoltage=" + nominalVoltage +
                 ", driveCurrentLimit=" + driveCurrentLimit +
                 ", steerCurrentLimit=" + steerCurrentLimit +
+                ", steerMotor=" + steerMotor +
+                ", driveMotor=" + driveMotor +
                 '}';
     }
 }

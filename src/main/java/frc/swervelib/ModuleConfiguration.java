@@ -2,8 +2,6 @@ package frc.swervelib;
 
 import java.util.Objects;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-
 /**
  * A swerve module configuration.
  * <p>
@@ -19,9 +17,6 @@ public class ModuleConfiguration {
     private final double steerReduction;
     private final boolean steerInverted;
 
-    private final DCMotor driveMotor;
-    private final DCMotor steerMotor;
-
     /**
      * Creates a new module configuration.
      *
@@ -34,19 +29,14 @@ public class ModuleConfiguration {
      *                       should result in rotations of the steering pulley.
      * @param steerInverted  Whether the steer motor should be inverted. If there is an odd number of gear reductions
      *                       this is typically true.
-     * @param driveMotor     Motor type of the drive motor.
-     * @param steerMotor     Motor type of the steer motor.
      */
     public ModuleConfiguration(double wheelDiameter, double driveReduction, boolean driveInverted,
-                               double steerReduction, boolean steerInverted, DCMotor driveMotor,
-                               DCMotor steerMotor) {
+                               double steerReduction, boolean steerInverted) {
         this.wheelDiameter = wheelDiameter;
         this.driveReduction = driveReduction;
         this.driveInverted = driveInverted;
         this.steerReduction = steerReduction;
         this.steerInverted = steerInverted;
-        this.driveMotor = driveMotor;
-        this.steerMotor = steerMotor;
     }
 
     /**
@@ -88,20 +78,6 @@ public class ModuleConfiguration {
         return steerInverted;
     }
 
-    /**
-     * Gets the type of the drive motor.
-     */
-    public DCMotor getDriveMotor() {
-        return driveMotor;
-    }
-
-    /**
-     * Gets the type of the steer motor.
-     */
-    public DCMotor getSteerMotor() {
-        return steerMotor;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -133,8 +109,6 @@ public class ModuleConfiguration {
                 ", driveInverted=" + driveInverted +
                 ", steerReduction=" + steerReduction +
                 ", steerInverted=" + steerInverted +
-                ", driveMotor=" + driveMotor +
-                ", steerMotor=" + steerMotor +
                 '}';
     }
 }

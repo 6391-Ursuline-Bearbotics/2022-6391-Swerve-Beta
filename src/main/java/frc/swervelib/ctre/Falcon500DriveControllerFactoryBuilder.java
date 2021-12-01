@@ -4,9 +4,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.swervelib.DriveController;
 import frc.swervelib.DriveControllerFactory;
 import frc.swervelib.ModuleConfiguration;
@@ -60,7 +62,7 @@ public final class Falcon500DriveControllerFactoryBuilder {
             }
 
             TalonFX motor = new TalonFX(driveConfiguration);
-            TalonFXSensorCollection motorSim =  motor.getSensorCollection();
+            TalonFXSimCollection motorSim = new TalonFXSimCollection(motor);
             CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
 
             if (hasVoltageCompensation()) {
@@ -89,11 +91,11 @@ public final class Falcon500DriveControllerFactoryBuilder {
 
     private class ControllerImplementation implements DriveController {
         private final TalonFX motor;
-        private final TalonFXSensorCollection motorSim;
+        private final TalonFXSimCollection motorSim;
         private final double sensorVelocityCoefficient;
         private final double nominalVoltage = hasVoltageCompensation() ? Falcon500DriveControllerFactoryBuilder.this.nominalVoltage : 12.0;
 
-        private ControllerImplementation(TalonFX motor, TalonFXSensorCollection motorSim, double sensorVelocityCoefficient) {
+        private ControllerImplementation(TalonFX motor, TalonFXSimCollection motorSim, double sensorVelocityCoefficient) {
             this.motor = motor;
             this.motorSim = motorSim;
             this.sensorVelocityCoefficient = sensorVelocityCoefficient;
@@ -102,6 +104,11 @@ public final class Falcon500DriveControllerFactoryBuilder {
         @Override
         public void setReferenceVoltage(double voltage) {
             motor.set(TalonFXControlMode.PercentOutput, voltage / nominalVoltage);
+        }
+
+        @Override
+        public DCMotor getDriveMotor() {
+            return DCMotor.getFalcon500(1);
         }
 
         @Override

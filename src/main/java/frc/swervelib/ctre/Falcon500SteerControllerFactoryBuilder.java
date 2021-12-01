@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import frc.swervelib.*;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static frc.swervelib.ctre.CtreUtils.checkCtreError;
@@ -223,6 +224,11 @@ public final class Falcon500SteerControllerFactoryBuilder {
             }
 
             return motorAngleRadians;
+        }
+
+        @Override
+        public DCMotor getSteerMotor() {
+            return DCMotor.getFalcon500(1);
         }
     }
 }

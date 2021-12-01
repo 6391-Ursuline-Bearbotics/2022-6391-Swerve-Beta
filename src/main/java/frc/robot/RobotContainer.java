@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.UA6391.XboxController6391;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.lib.XboxController6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer {
-  private static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
   private static final XboxController6391 m_controller = new XboxController6391(0, 0.05);
 
@@ -44,7 +44,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
     // No requirements because we don't need to interrupt anything
-    m_controller.BackButton.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    m_controller.BackButton.whenPressed(m_drivetrainSubsystem.dt::zeroGyroscope);
   }
 
   /**
