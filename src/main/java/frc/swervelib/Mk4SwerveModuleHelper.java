@@ -7,8 +7,6 @@ import frc.swervelib.rev.NeoSteerConfiguration;
 import frc.swervelib.rev.NeoSteerControllerFactoryBuilder;
 import frc.wpiClasses.QuadSwerveSim;
 import frc.wpiClasses.SwerveModuleSim;
-import frc.swervelib.SwerveModule;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
 public final class Mk4SwerveModuleHelper {
@@ -521,7 +519,7 @@ public final class Mk4SwerveModuleHelper {
                                    1 / modConfig.getDriveReduction(),
                                    1.1,
                                    0.8,
-                                   Constants.ROBOT_MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
+                                   Constants.ROBOT.MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
                                    0.01 
                                    );
     }

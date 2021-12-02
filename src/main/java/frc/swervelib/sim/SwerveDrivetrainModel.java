@@ -2,9 +2,6 @@ package frc.swervelib.sim;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.sensors.CANCoderSimCollection;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -17,8 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.sim.wpiClasses.QuadSwerveSim;
-import frc.sim.wpiClasses.SwerveModuleSim;
+import frc.wpiClasses.QuadSwerveSim;
+import frc.wpiClasses.SwerveModuleSim;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.DriveController;
 import frc.swervelib.Gyroscope;
@@ -41,13 +38,7 @@ public class SwerveDrivetrainModel {
     public Field2d field;
     Pose2d endPose;
 
-    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
-    );
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, gyro.getGyroHeading());
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Constants.DRIVE.KINEMATICS, gyro.getGyroHeading());
 
     public SwerveDrivetrainModel(ArrayList<SwerveModule> realModules, Gyroscope gyro){
         this.gyro = gyro;
@@ -83,10 +74,10 @@ public class SwerveDrivetrainModel {
         field.setRobotPose(Constants.DFLT_START_POSE);
         endPose = Constants.DFLT_START_POSE;
 
-        swerveDt = new QuadSwerveSim(Constants.WHEEL_BASE_WIDTH_M, 
-                                     Constants.WHEEL_BASE_WIDTH_M, 
-                                     Constants.ROBOT_MASS_kg, 
-                                     Constants.ROBOT_MOI_KGM2, 
+        swerveDt = new QuadSwerveSim(Constants.DRIVE.TRACKWIDTH_METERS, 
+                                     Constants.DRIVE.TRACKWIDTH_METERS, 
+                                     Constants.ROBOT.MASS_kg, 
+                                     Constants.ROBOT.MOI_KGM2, 
                                      modules);
     }
 
