@@ -1,4 +1,4 @@
-package frc;
+package frc.swervelib;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
-public class Constants {
+public class SimConstants {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // ROBOT PHYSICAL CONSTANTS
@@ -34,8 +34,8 @@ public class Constants {
     static public final int ENC_PULSE_PER_REV = 1024;
     static public final int WHEEL_ENC_COUNTS_PER_WHEEL_REV = ENC_PULSE_PER_REV;  //Assume 1-1 gearing for now
     static public final int steer_ENC_COUNTS_PER_MODULE_REV = ENC_PULSE_PER_REV; //Assume 1-1 gearing for now
-    static public final double WHEEL_ENC_WHEEL_REVS_PER_COUNT  = 1.0/((double)(Constants.WHEEL_ENC_COUNTS_PER_WHEEL_REV));
-    static public final double steer_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(Constants.steer_ENC_COUNTS_PER_MODULE_REV));
+    static public final double WHEEL_ENC_WHEEL_REVS_PER_COUNT  = 1.0/((double)(SimConstants.WHEEL_ENC_COUNTS_PER_WHEEL_REV));
+    static public final double steer_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(SimConstants.steer_ENC_COUNTS_PER_MODULE_REV));
     // Vision Camera
     static public final String PHOTON_CAM_NAME = "MainCamera";
 

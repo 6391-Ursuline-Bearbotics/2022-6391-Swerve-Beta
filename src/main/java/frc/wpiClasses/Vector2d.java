@@ -1,4 +1,4 @@
-package frc.sim.wpiClasses;
+package frc.wpiClasses;
 
 /**
  * This is a 2D vector struct that supports basic vector operations.

@@ -3,8 +3,10 @@ package frc.swervelib;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS.SerialDataType;
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import frc.swervelib.ctre.PigeonFactoryBuilder;
 import frc.swervelib.kauailabs.navXFactoryBuilder;
 
@@ -27,7 +29,8 @@ public final class GyroscopeHelper {
         return new navXFactoryBuilder().build(navx);
     }
 
-    /* public static Gyroscope createnavXUSB() {
-        //Not implemented yet.
-    } */
+    public static Gyroscope createnavXUSB() {
+        AHRS navx = new AHRS(SerialPort.Port.kUSB, SerialDataType.kProcessedData, (byte) 200);
+        return new navXFactoryBuilder().build(navx);
+    }
 }

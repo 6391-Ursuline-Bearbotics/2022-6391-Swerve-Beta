@@ -1,13 +1,12 @@
 package frc.swervelib;
 
 import frc.robot.Constants;
-import frc.sim.wpiClasses.QuadSwerveSim;
-import frc.sim.wpiClasses.SwerveModuleSim;
 import frc.swervelib.ctre.*;
 import frc.swervelib.rev.NeoDriveControllerFactoryBuilder;
 import frc.swervelib.rev.NeoSteerConfiguration;
 import frc.swervelib.rev.NeoSteerControllerFactoryBuilder;
-
+import frc.wpiClasses.QuadSwerveSim;
+import frc.wpiClasses.SwerveModuleSim;
 import frc.swervelib.SwerveModule;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;

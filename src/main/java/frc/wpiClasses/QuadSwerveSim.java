@@ -1,4 +1,4 @@
-package frc.sim.wpiClasses;
+package frc.wpiClasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;

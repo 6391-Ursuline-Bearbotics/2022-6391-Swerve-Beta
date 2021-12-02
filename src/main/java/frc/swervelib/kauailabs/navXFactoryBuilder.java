@@ -3,6 +3,8 @@ package frc.swervelib.kauailabs;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.swervelib.Gyroscope;
 
@@ -13,9 +15,13 @@ public class navXFactoryBuilder {
 
     private static class GyroscopeImplementation implements Gyroscope {
         private final AHRS navX;
+        private final SimDouble angleSim;
 
         private GyroscopeImplementation(AHRS navX) {
             this.navX = navX;
+
+            int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+            angleSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         }
 
         @Override
@@ -31,6 +37,11 @@ public class navXFactoryBuilder {
         @Override
         public void zeroGyroscope() {
             navX.zeroYaw();
+        }
+
+        @Override
+        public void setAngle(double angle) {
+            angleSim.set(angle);
         }
     }
 }

@@ -1,4 +1,4 @@
-package frc.sim.wpiClasses;
+package frc.wpiClasses;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;

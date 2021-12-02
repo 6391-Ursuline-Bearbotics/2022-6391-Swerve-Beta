@@ -8,18 +8,22 @@ import com.ctre.phoenix.sensors.CANCoderSimCollection;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.PWMSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import frc.Constants;
-import frc.PoseTelemetry;
+import frc.robot.Constants;
 import frc.sim.wpiClasses.QuadSwerveSim;
 import frc.sim.wpiClasses.SwerveModuleSim;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.DriveController;
 import frc.swervelib.Gyroscope;
 import frc.swervelib.Mk4SwerveModuleHelper;
+import frc.swervelib.PoseTelemetry;
 import frc.swervelib.SteerController;
 import frc.swervelib.SwerveModule;
 
@@ -37,34 +41,44 @@ public class SwerveDrivetrainModel {
     public Field2d field;
     Pose2d endPose;
 
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+    );
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, gyro.getGyroHeading());
+
     public SwerveDrivetrainModel(ArrayList<SwerveModule> realModules, Gyroscope gyro){
         this.gyro = gyro;
 
-        modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
-        modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1)));
-        modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2)));
-        modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3)));
+        if (RobotBase.isSimulation()) {
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3)));
 
-        steerMotorControllers.add(new PWMSim(Constants.FL_steer_MOTOR_IDX));
-        steerMotorControllers.add(new PWMSim(Constants.FR_steer_MOTOR_IDX));
-        steerMotorControllers.add(new PWMSim(Constants.BL_steer_MOTOR_IDX));
-        steerMotorControllers.add(new PWMSim(Constants.BR_steer_MOTOR_IDX));
+            steerMotorControllers.add(new PWMSim(Constants.FL_steer_MOTOR_IDX));
+            steerMotorControllers.add(new PWMSim(Constants.FR_steer_MOTOR_IDX));
+            steerMotorControllers.add(new PWMSim(Constants.BL_steer_MOTOR_IDX));
+            steerMotorControllers.add(new PWMSim(Constants.BR_steer_MOTOR_IDX));
 
-        driveMotorControllers.add(new PWMSim(Constants.FL_WHEEL_MOTOR_IDX));
-        driveMotorControllers.add(new PWMSim(Constants.FR_WHEEL_MOTOR_IDX));
-        driveMotorControllers.add(new PWMSim(Constants.BL_WHEEL_MOTOR_IDX));
-        driveMotorControllers.add(new PWMSim(Constants.BR_WHEEL_MOTOR_IDX));
+            driveMotorControllers.add(new PWMSim(Constants.FL_WHEEL_MOTOR_IDX));
+            driveMotorControllers.add(new PWMSim(Constants.FR_WHEEL_MOTOR_IDX));
+            driveMotorControllers.add(new PWMSim(Constants.BL_WHEEL_MOTOR_IDX));
+            driveMotorControllers.add(new PWMSim(Constants.BR_WHEEL_MOTOR_IDX));
 
-        steerEncoders.add(new SimQuadratureEncoder(Constants.FL_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
-        steerEncoders.add(new SimQuadratureEncoder(Constants.FR_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
-        steerEncoders.add(new SimQuadratureEncoder(Constants.BL_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
-        steerEncoders.add(new SimQuadratureEncoder(Constants.BR_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
+            steerEncoders.add(new SimQuadratureEncoder(Constants.FL_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
+            steerEncoders.add(new SimQuadratureEncoder(Constants.FR_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
+            steerEncoders.add(new SimQuadratureEncoder(Constants.BL_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
+            steerEncoders.add(new SimQuadratureEncoder(Constants.BR_steer_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.steer_ENC_MODULE_REVS_PER_COUNT));
 
-        wheelEncoders.add(new SimQuadratureEncoder(Constants.FL_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
-        wheelEncoders.add(new SimQuadratureEncoder(Constants.FR_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
-        wheelEncoders.add(new SimQuadratureEncoder(Constants.BL_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
-        wheelEncoders.add(new SimQuadratureEncoder(Constants.BR_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
-
+            wheelEncoders.add(new SimQuadratureEncoder(Constants.FL_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
+            wheelEncoders.add(new SimQuadratureEncoder(Constants.FR_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
+            wheelEncoders.add(new SimQuadratureEncoder(Constants.BL_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
+            wheelEncoders.add(new SimQuadratureEncoder(Constants.BR_WHEEL_ENC_A_IDX, Constants.ENC_PULSE_PER_REV, Constants.WHEEL_ENC_WHEEL_REVS_PER_COUNT));
+        }
+        
         field = PoseTelemetry.field;
         field.setRobotPose(Constants.DFLT_START_POSE);
         endPose = Constants.DFLT_START_POSE;
@@ -85,7 +99,7 @@ public class SwerveDrivetrainModel {
     public void modelReset(Pose2d pose){
         field.setRobotPose(pose);
         swerveDt.modelReset(pose);
-        gyro.resetToPose(pose);
+        resetPose(pose);
     }
 
     /**
@@ -116,6 +130,15 @@ public class SwerveDrivetrainModel {
                 modules.get(idx).setInputVoltages(wheelVolts, steerVolts);
             }
         }
+
+        //Update Odometry
+        odometry.update(Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
+                new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle())),
+                new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle())),
+                new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle())),
+                new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()))
+        );
+
 
         //Update the main drivetrain plant model
         swerveDt.update(Constants.SIM_SAMPLE_RATE_SEC);

@@ -12,6 +12,7 @@ import frc.swervelib.GyroscopeHelper;
 import frc.swervelib.Mk4SwerveModuleHelper;
 import frc.swervelib.sim.DrivetrainPoseEstimator;
 import frc.swervelib.sim.SwerveDrivetrainModel;
+import frc.wpiClasses.QuadSwerveSim;
 import frc.swervelib.SdsModuleConfigurations;
 import frc.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,7 +26,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.sim.wpiClasses.QuadSwerveSim;
 
 import static frc.robot.Constants.*;
 

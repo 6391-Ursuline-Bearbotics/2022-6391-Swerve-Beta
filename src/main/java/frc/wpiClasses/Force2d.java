@@ -1,4 +1,4 @@
-package frc.sim.wpiClasses;
+package frc.wpiClasses;
 
 import org.ejml.simple.SimpleMatrix;
 

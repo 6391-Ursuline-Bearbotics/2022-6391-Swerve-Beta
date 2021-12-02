@@ -7,12 +7,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import frc.swervelib.SimConstants;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMUSimCollection;
 
 import edu.wpi.first.math.VecBuilder;
-import frc.Constants;
 
 public class DrivetrainPoseEstimator {
 
@@ -26,7 +26,7 @@ public class DrivetrainPoseEstimator {
         return instance;
     }
 
-    Pose2d curEstPose = new Pose2d(Constants.DFLT_START_POSE.getTranslation(), Constants.DFLT_START_POSE.getRotation());
+    Pose2d curEstPose = new Pose2d(SimConstants.DFLT_START_POSE.getTranslation(), SimConstants.DFLT_START_POSE.getRotation());
 
     Pose2d fieldPose = new Pose2d(); // Field-referenced orign
 
@@ -50,11 +50,11 @@ public class DrivetrainPoseEstimator {
         // rotation)
         var visionMeasurementStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.1));
 
-        m_poseEstimator = new SwerveDrivePoseEstimator(getGyroHeading(), Constants.DFLT_START_POSE,
-                Constants.m_kinematics, stateStdDevs, localMeasurementStdDevs, visionMeasurementStdDevs,
-                Constants.CTRLS_SAMPLE_RATE_SEC);
+        m_poseEstimator = new SwerveDrivePoseEstimator(getGyroHeading(), SimConstants.DFLT_START_POSE,
+                SimConstants.m_kinematics, stateStdDevs, localMeasurementStdDevs, visionMeasurementStdDevs,
+                SimConstants.CTRLS_SAMPLE_RATE_SEC);
 
-        setKnownPose(Constants.DFLT_START_POSE);
+        setKnownPose(SimConstants.DFLT_START_POSE);
 
     }
 
@@ -85,7 +85,7 @@ public class DrivetrainPoseEstimator {
 
         // Calculate a "speedometer" velocity in ft/sec
         Transform2d deltaPose = new Transform2d(prevEstPose, curEstPose);
-        curSpeed = Units.metersToFeet(deltaPose.getTranslation().getNorm()) / Constants.CTRLS_SAMPLE_RATE_SEC;
+        curSpeed = Units.metersToFeet(deltaPose.getTranslation().getNorm()) / SimConstants.CTRLS_SAMPLE_RATE_SEC;
 
         updateDownfieldFlag();
     }
