@@ -155,7 +155,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
         private final double motorEncoderPositionCoefficient;
         private final double motorEncoderVelocityCoefficient;
         private final TalonFXControlMode motorControlMode;
-        private final AbsoluteEncoder absoluteEncoder;
+        public final AbsoluteEncoder absoluteEncoder;
 
         private double referenceAngleRadians = 0.0;
 
@@ -229,6 +229,16 @@ public final class Falcon500SteerControllerFactoryBuilder {
         @Override
         public DCMotor getSteerMotor() {
             return DCMotor.getFalcon500(1);
+        }
+
+        @Override
+        public AbsoluteEncoder getAbsoluteEncoder() {
+            return absoluteEncoder;
+        }
+
+        @Override
+        public double getOutputVoltage() {
+            return motor.getMotorOutputVoltage();
         }
     }
 }

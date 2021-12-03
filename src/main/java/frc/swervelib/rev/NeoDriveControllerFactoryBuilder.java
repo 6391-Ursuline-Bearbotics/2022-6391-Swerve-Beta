@@ -83,6 +83,12 @@ public final class NeoDriveControllerFactoryBuilder {
         }
 
         @Override
+        public void setDriveEncoder(double position, double velocity) {
+            motor.getEncoder().setPosition(position);
+            //motor.getEncoder()
+        }
+
+        @Override
         public DCMotor getDriveMotor() {
             return DCMotor.getNEO(1);
         }
@@ -90,6 +96,11 @@ public final class NeoDriveControllerFactoryBuilder {
         @Override
         public double getStateVelocity() {
             return encoder.getVelocity();
+        }
+
+        @Override
+        public double getOutputVoltage() {
+            return motor.getBusVoltage() * motor.getAppliedOutput();
         }
     }
 }

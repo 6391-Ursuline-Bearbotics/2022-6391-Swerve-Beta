@@ -58,8 +58,16 @@ public class SwerveModuleSim {
         return steerMotor.getMechanismPosition_Rev() * azimuthEncGearRatio;
     }
 
+    public double getAzimuthEncoderVelocityRPM(){
+        return steerMotor.getMechanismSpeed_RPM() * azimuthEncGearRatio;
+    }
+
     public double getWheelEncoderPositionRev(){
         return driveMotor.getPosition_Rev() * wheelEncGearRatio;
+    }
+
+    public double getWheelEncoderVelocityRPM(){
+        return steerMotor.getMechanismSpeed_RPM() * wheelEncGearRatio;
     }
 
     void reset(Pose2d initModulePose){

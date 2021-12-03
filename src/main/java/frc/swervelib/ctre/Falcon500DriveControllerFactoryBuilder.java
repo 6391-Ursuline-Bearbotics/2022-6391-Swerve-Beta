@@ -6,9 +6,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import frc.robot.Constants;
 import frc.swervelib.DriveController;
 import frc.swervelib.DriveControllerFactory;
 import frc.swervelib.ModuleConfiguration;
@@ -62,7 +62,6 @@ public final class Falcon500DriveControllerFactoryBuilder {
             }
 
             TalonFX motor = new TalonFX(driveConfiguration);
-            TalonFXSimCollection motorSim = new TalonFXSimCollection(motor);
             CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
 
             if (hasVoltageCompensation()) {
@@ -85,25 +84,29 @@ public final class Falcon500DriveControllerFactoryBuilder {
                     "Failed to configure Falcon status frame period"
             );
 
-            return new ControllerImplementation(motor, motorSim, sensorVelocityCoefficient);
+            return new ControllerImplementation(motor, sensorVelocityCoefficient);
         }
     }
 
     private class ControllerImplementation implements DriveController {
         private final TalonFX motor;
-        private final TalonFXSimCollection motorSim;
         private final double sensorVelocityCoefficient;
         private final double nominalVoltage = hasVoltageCompensation() ? Falcon500DriveControllerFactoryBuilder.this.nominalVoltage : 12.0;
 
-        private ControllerImplementation(TalonFX motor, TalonFXSimCollection motorSim, double sensorVelocityCoefficient) {
+        private ControllerImplementation(TalonFX motor, double sensorVelocityCoefficient) {
             this.motor = motor;
-            this.motorSim = motorSim;
             this.sensorVelocityCoefficient = sensorVelocityCoefficient;
         }
 
         @Override
         public void setReferenceVoltage(double voltage) {
             motor.set(TalonFXControlMode.PercentOutput, voltage / nominalVoltage);
+        }
+
+        @Override
+        public void setDriveEncoder(double position, double velocity) {
+            motor.getSimCollection().setIntegratedSensorRawPosition(metersToSteps(position));
+            motor.getSimCollection().setIntegratedSensorVelocity(metersPerSecToStepsPerDecisec(velocity));
         }
 
         @Override
@@ -115,5 +118,28 @@ public final class Falcon500DriveControllerFactoryBuilder {
         public double getStateVelocity() {
             return motor.getSelectedSensorVelocity() * sensorVelocityCoefficient;
         }
+
+        @Override
+        public double getOutputVoltage() {
+            return motor.getMotorOutputVoltage();
+        }
+    }
+
+    /**
+     * Converts from meters to encoder units.
+     * @param meters meters
+     * @return encoder units
+     */
+    private static int metersToSteps(double meters) {
+        return (int)(meters / (Constants.DRIVE.WHEEL_CIRCUMFERENCE_METERS / Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
+    }
+
+    /**
+     * Converts from meters per second to encoder units per 100 milliseconds.
+     * @param metersPerSec meters per second
+     * @return encoder units per decisecond
+     */
+    private static int metersPerSecToStepsPerDecisec(double metersPerSec) {
+        return (int)(metersToSteps(metersPerSec) * .1d);
     }
 }

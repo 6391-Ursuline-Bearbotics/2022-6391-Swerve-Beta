@@ -4,6 +4,8 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+
+import frc.robot.Constants;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.AbsoluteEncoderFactory;
 
@@ -49,10 +51,34 @@ public class CanCoderFactoryBuilder {
 
             return angle;
         }
+
+        @Override
+        public void setAbsoluteEncoder(double position, double velocity) {
+            encoder.getSimCollection().setRawPosition(metersToSteps(position));
+            encoder.getSimCollection().setVelocity(metersPerSecToStepsPerDecisec(velocity));
+        }
     }
 
     public enum Direction {
         CLOCKWISE,
         COUNTER_CLOCKWISE
+    }
+
+    /**
+     * Converts from meters to encoder units.
+     * @param meters meters
+     * @return encoder units
+     */
+    private static int metersToSteps(double meters) {
+        return (int)(meters / (Constants.DRIVE.WHEEL_CIRCUMFERENCE_METERS / Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
+    }
+
+    /**
+     * Converts from meters per second to encoder units per 100 milliseconds.
+     * @param metersPerSec meters per second
+     * @return encoder units per decisecond
+     */
+    private static int metersPerSecToStepsPerDecisec(double metersPerSec) {
+        return (int)(metersToSteps(metersPerSec) * .1d);
     }
 }

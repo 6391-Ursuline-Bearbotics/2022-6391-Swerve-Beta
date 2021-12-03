@@ -7,4 +7,6 @@ public interface AbsoluteEncoder {
      * @return The current angle in radians. Range: [0, 2pi)
      */
     double getAbsoluteAngle();
+
+    void setAbsoluteEncoder(double position, double velocity);
 }

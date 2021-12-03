@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import frc.swervelib.Gyroscope;
 import frc.swervelib.GyroscopeHelper;
 import frc.swervelib.Mk4SwerveModuleHelper;
-import frc.swervelib.sim.DrivetrainPoseEstimator;
 import frc.swervelib.sim.SwerveDrivetrainModel;
 import frc.wpiClasses.QuadSwerveSim;
 import frc.swervelib.SdsModuleConfigurations;
@@ -69,7 +68,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   ArrayList<SwerveModule> modules = new ArrayList<SwerveModule>(QuadSwerveSim.NUM_MODULES);
   PDPSim pdp;
   public SwerveDrivetrainModel dt;
-  public DrivetrainPoseEstimator dtpe;
 
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");

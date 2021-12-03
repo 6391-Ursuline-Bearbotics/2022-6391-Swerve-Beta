@@ -47,7 +47,6 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_drivetrainSubsystem.dt.updateTelemetry();
     m_robotContainer.m_drivetrainSubsystem.dt.update(isDisabled(), 13.2);
-    m_robotContainer.m_drivetrainSubsystem.dtpe.update();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

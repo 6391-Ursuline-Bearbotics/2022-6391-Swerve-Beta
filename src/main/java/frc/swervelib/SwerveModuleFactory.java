@@ -72,6 +72,11 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         }
 
         @Override
+        public AbsoluteEncoder getAbsoluteEncoder() {
+            return steerController.getAbsoluteEncoder();
+        }
+
+        @Override
         public void set(double driveVoltage, double steerAngle) {
             steerAngle %= (2.0 * Math.PI);
             if (steerAngle < 0.0) {

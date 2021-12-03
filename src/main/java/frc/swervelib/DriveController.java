@@ -8,4 +8,8 @@ public interface DriveController {
     DCMotor getDriveMotor();
 
     double getStateVelocity();
+
+    double getOutputVoltage();
+
+    void setDriveEncoder(double position, double velocity);
 }

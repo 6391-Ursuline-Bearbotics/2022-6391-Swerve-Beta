@@ -9,5 +9,9 @@ public interface SteerController {
 
     DCMotor getSteerMotor();
 
+    AbsoluteEncoder getAbsoluteEncoder();
+
     double getStateAngle();
+
+    double getOutputVoltage();
 }

@@ -164,6 +164,11 @@ public final class NeoSteerControllerFactoryBuilder {
         }
 
         @Override
+        public AbsoluteEncoder getAbsoluteEncoder() {
+            return absoluteEncoder;
+        }
+
+        @Override
         public double getStateAngle() {
             double motorAngleRadians = motorEncoder.getPosition();
             motorAngleRadians %= 2.0 * Math.PI;
@@ -172,6 +177,11 @@ public final class NeoSteerControllerFactoryBuilder {
             }
 
             return motorAngleRadians;
+        }
+
+        @Override
+        public double getOutputVoltage() {
+            return motor.getBusVoltage() * motor.getAppliedOutput();
         }
     }
 }
