@@ -24,7 +24,7 @@ public final class GyroscopeHelper {
         return new PigeonFactoryBuilder().build(pigeon);
     }
 
-    public static Gyroscope createnavXMXP() {
+/*     public static Gyroscope createnavXMXP() {
         AHRS navx = new AHRS(SPI.Port.kMXP, (byte) 200);
         return new navXFactoryBuilder().build(navx);
     }
@@ -32,5 +32,5 @@ public final class GyroscopeHelper {
     public static Gyroscope createnavXUSB() {
         AHRS navx = new AHRS(SerialPort.Port.kUSB, SerialDataType.kProcessedData, (byte) 200);
         return new navXFactoryBuilder().build(navx);
-    }
+    } */
 }
