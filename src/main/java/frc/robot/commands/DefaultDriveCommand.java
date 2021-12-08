@@ -1,13 +1,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.XboxController6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
-
-import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
@@ -40,18 +37,18 @@ public class DefaultDriveCommand extends CommandBase {
     public void execute() {
         switch (driverChooser.getSelected()) {
             case "Both Sticks":
-              m_translationX = modifyAxis(m_controller.JoystickLX());
-              m_translationY = -modifyAxis(m_controller.JoystickLY());
+              m_translationX = modifyAxis(m_controller.JoystickLY());
+              m_translationY = modifyAxis(m_controller.JoystickLX());
               m_rotation = modifyAxis(m_controller.JoystickRX());
               break;
             case "Left Stick and Triggers":
-              m_translationX = modifyAxis(m_controller.JoystickLX());
-              m_translationY = -modifyAxis(m_controller.JoystickLY());
+              m_translationX = modifyAxis(m_controller.JoystickLY());
+              m_translationY = modifyAxis(m_controller.JoystickLX());
               m_rotation = m_controller.TriggerCombined();
               break;
             case "Gas Pedal":
-              m_translationX = modifyAxis(m_controller.JoystickLX());
-              m_translationY = -modifyAxis(m_controller.JoystickLY());
+              m_translationX = modifyAxis(m_controller.JoystickLY());
+              m_translationY = modifyAxis(m_controller.JoystickLX());
               double angle = calculateTranslationDirection(m_translationX, m_translationY);
               m_translationX = Math.cos(angle) * m_controller.TriggerR();
               m_translationY = Math.sin(angle) * m_controller.TriggerR();
@@ -59,7 +56,7 @@ public class DefaultDriveCommand extends CommandBase {
               break;
         }
 
-        m_drivetrainSubsystem.drive(
+        m_drivetrainSubsystem.dt.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
                         m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
@@ -71,7 +68,7 @@ public class DefaultDriveCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drivetrainSubsystem.dt.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
 
   private static double modifyAxis(double value) {

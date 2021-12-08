@@ -1,6 +1,5 @@
 package frc.swervelib.kauailabs;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.SimDouble;
@@ -26,18 +25,17 @@ public class navXFactoryBuilder {
 
         @Override
         public Rotation2d getGyroHeading() {
-            return new Rotation2d();
-/*             if (navX.isMagnetometerCalibrated()) {
+            if (navX.isMagnetometerCalibrated()) {
                // We will only get valid fused headings if the magnetometer is calibrated
                return Rotation2d.fromDegrees(navX.getFusedHeading());
             }
             // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-            return Rotation2d.fromDegrees(360.0 - navX.getYaw()); */
+            return Rotation2d.fromDegrees(360.0 - navX.getYaw());
         }
 
         @Override
         public void zeroGyroscope() {
-            //navX.zeroYaw();
+            navX.zeroYaw();
         }
 
         @Override

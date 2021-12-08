@@ -54,31 +54,16 @@ public class CanCoderFactoryBuilder {
 
         @Override
         public void setAbsoluteEncoder(double position, double velocity) {
-            encoder.getSimCollection().setRawPosition(metersToSteps(position));
-            encoder.getSimCollection().setVelocity(metersPerSecToStepsPerDecisec(velocity));
+            // Position is in revolutions.  Velocity is in RPM
+            // CANCoder wants steps for postion.  Steps per 100ms for velocity
+            encoder.getSimCollection().setRawPosition((int) (position * Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
+            // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
+            encoder.getSimCollection().setVelocity((int) (velocity / 600 * Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
         }
     }
 
     public enum Direction {
         CLOCKWISE,
         COUNTER_CLOCKWISE
-    }
-
-    /**
-     * Converts from meters to encoder units.
-     * @param meters meters
-     * @return encoder units
-     */
-    private static int metersToSteps(double meters) {
-        return (int)(meters / (Constants.DRIVE.WHEEL_CIRCUMFERENCE_METERS / Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
-    }
-
-    /**
-     * Converts from meters per second to encoder units per 100 milliseconds.
-     * @param metersPerSec meters per second
-     * @return encoder units per decisecond
-     */
-    private static int metersPerSecToStepsPerDecisec(double metersPerSec) {
-        return (int)(metersToSteps(metersPerSec) * .1d);
     }
 }

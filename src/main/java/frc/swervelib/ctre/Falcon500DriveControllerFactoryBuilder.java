@@ -105,8 +105,16 @@ public final class Falcon500DriveControllerFactoryBuilder {
 
         @Override
         public void setDriveEncoder(double position, double velocity) {
-            motor.getSimCollection().setIntegratedSensorRawPosition(metersToSteps(position));
-            motor.getSimCollection().setIntegratedSensorVelocity(metersPerSecToStepsPerDecisec(velocity));
+            // Position is in revolutions.  Velocity is in RPM
+            // CANCoder wants steps for postion.  Steps per 100ms for velocity
+            motor.getSimCollection().setIntegratedSensorRawPosition((int) (position * Constants.DRIVE.ENC_PULSE_PER_REV));
+            // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
+            motor.getSimCollection().setIntegratedSensorVelocity((int) (velocity / 600 * Constants.DRIVE.ENC_PULSE_PER_REV));
+        }
+
+        @Override
+        public void resetEncoder() {
+            motor.setSelectedSensorPosition(0);
         }
 
         @Override
@@ -123,23 +131,5 @@ public final class Falcon500DriveControllerFactoryBuilder {
         public double getOutputVoltage() {
             return motor.getMotorOutputVoltage();
         }
-    }
-
-    /**
-     * Converts from meters to encoder units.
-     * @param meters meters
-     * @return encoder units
-     */
-    private static int metersToSteps(double meters) {
-        return (int)(meters / (Constants.DRIVE.WHEEL_CIRCUMFERENCE_METERS / Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
-    }
-
-    /**
-     * Converts from meters per second to encoder units per 100 milliseconds.
-     * @param metersPerSec meters per second
-     * @return encoder units per decisecond
-     */
-    private static int metersPerSecToStepsPerDecisec(double metersPerSec) {
-        return (int)(metersToSteps(metersPerSec) * .1d);
     }
 }

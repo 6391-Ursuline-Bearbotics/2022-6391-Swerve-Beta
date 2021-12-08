@@ -83,6 +83,11 @@ public final class NeoDriveControllerFactoryBuilder {
         }
 
         @Override
+        public void resetEncoder() {
+            encoder.setPosition(0);
+        }
+
+        @Override
         public void setDriveEncoder(double position, double velocity) {
             motor.getEncoder().setPosition(position);
             //motor.getEncoder()

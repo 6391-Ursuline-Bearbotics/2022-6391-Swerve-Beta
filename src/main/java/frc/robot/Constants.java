@@ -29,7 +29,7 @@ public final class Constants {
         public static final double BATTERY_NOMINAL_RESISTANCE = 0.040; //40mOhm - average battery + cabling
 
         // Assumed starting location of the robot. Auto routines will pick their own location and update this.
-        static public final Pose2d DFLT_START_POSE = new Pose2d(Units.feetToMeters(24.0), Units.feetToMeters(10.0), Rotation2d.fromDegrees(180));
+        static public final Pose2d DFLT_START_POSE = new Pose2d(Units.feetToMeters(24.0), Units.feetToMeters(10.0), Rotation2d.fromDegrees(0));
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // ROBOT PHYSICAL CONSTANTS
@@ -63,7 +63,7 @@ public final class Constants {
                 new Translation2d(-Constants.DRIVE.TRACKWIDTH_METERS / 2.0, -Constants.DRIVE.WHEELBASE_METERS / 2.0)
         );
 
-        public static final double WHEEL_DIAMETER_METERS = 0.10033;
+        public static final double WHEEL_DIAMETER_METERS = 0.10033; // .10033 = ~4 inches
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
         public static final int PIGEON_ID = 0; // FIXME Set Pigeon ID
@@ -90,7 +90,7 @@ public final class Constants {
 
         // Drivetrain Performance Mechanical limits
         static public final double MAX_FWD_REV_SPEED_MPS = Units.feetToMeters(12.0);
-        static public final double MAX_STRAFE_SPEED_MPS = Units.feetToMeters(8.0);
+        static public final double MAX_STRAFE_SPEED_MPS = Units.feetToMeters(12.0);
         static public final double MAX_ROTATE_SPEED_RAD_PER_SEC = Units.degreesToRadians(360.0);
         static public final double MAX_TRANSLATE_ACCEL_MPS2 = MAX_FWD_REV_SPEED_MPS/0.25; //0-full time of 0.25 second
         static public final double MAX_ROTATE_ACCEL_RAD_PER_SEC_2 = MAX_ROTATE_SPEED_RAD_PER_SEC/0.25; //0-full time of 0.25 second
@@ -98,9 +98,9 @@ public final class Constants {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // SENSOR CONSTANTS
         // Sensor-related constants - pulled from datasheets for the sensors and gearboxes
-        static public final int ENC_PULSE_PER_REV = 1024;
+        static public final int ENC_PULSE_PER_REV = 2048; // TalonFX integrated sensor
         static public final int WHEEL_ENC_COUNTS_PER_WHEEL_REV = ENC_PULSE_PER_REV;  //Assume 1-1 gearing for now
-        static public final int STEER_ENC_COUNTS_PER_MODULE_REV = 4096; //CANCoder
+        static public final int STEER_ENC_COUNTS_PER_MODULE_REV = 4096; // CANCoder
         static public final double WHEEL_ENC_WHEEL_REVS_PER_COUNT  = 1.0/((double)(WHEEL_ENC_COUNTS_PER_WHEEL_REV));
         static public final double steer_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(STEER_ENC_COUNTS_PER_MODULE_REV));
     }

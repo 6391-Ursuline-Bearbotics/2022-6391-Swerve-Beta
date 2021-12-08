@@ -2,9 +2,14 @@ package frc.swervelib.sim;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,6 +41,14 @@ public class SwerveDrivetrainModel {
     Pose2d endPose;
     PoseTelemetry dtPoseView;
 
+    SwerveDrivePoseEstimator m_poseEstimator;
+    Pose2d curEstPose = new Pose2d(Constants.ROBOT.DFLT_START_POSE.getTranslation(), Constants.ROBOT.DFLT_START_POSE.getRotation());
+    Pose2d fieldPose = new Pose2d(); // Field-referenced orign
+    boolean pointedDownfield = false;
+    double curSpeed = 0;
+    SwerveModuleState[] states;
+    private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
     public SwerveDrivetrainModel(ArrayList<SwerveModule> realModules, Gyroscope gyro){
         this.gyro = gyro;
         this.realModules = realModules;
@@ -57,6 +70,25 @@ public class SwerveDrivetrainModel {
                                      Constants.ROBOT.MASS_kg, 
                                      Constants.ROBOT.MOI_KGM2, 
                                      modules);
+
+        // Trustworthiness of the internal model of how motors should be moving
+        // Measured in expected standard deviation (meters of position and degrees of
+        // rotation)
+        var stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+
+        // Trustworthiness of gyro in radians of standard deviation.
+        var localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.1));
+
+        // Trustworthiness of the vision system
+        // Measured in expected standard deviation (meters of position and degrees of
+        // rotation)
+        var visionMeasurementStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.1));
+
+        m_poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), Constants.ROBOT.DFLT_START_POSE,
+                Constants.DRIVE.KINEMATICS, stateStdDevs, localMeasurementStdDevs, visionMeasurementStdDevs,
+                SimConstants.CTRLS_SAMPLE_RATE_SEC);
+
+        setKnownPose(Constants.ROBOT.DFLT_START_POSE);
     }
 
     /**
@@ -117,6 +149,27 @@ public class SwerveDrivetrainModel {
         field.setRobotPose(endPose);
         gyro.setAngle(swerveDt.getCurPose().getRotation().getDegrees());
 
+        // Based on gyro and measured module speeds and positions, estimate where our
+        // robot should have moved to.
+        Pose2d prevEstPose = curEstPose;
+        if (states != null) {
+            curEstPose = m_poseEstimator.update(getGyroscopeRotation(), states[0], states[1], states[2], states[3]);
+        
+            // Calculate a "speedometer" velocity in ft/sec
+            Transform2d chngPose = new Transform2d(prevEstPose, curEstPose);
+            curSpeed = Units.metersToFeet(chngPose.getTranslation().getNorm()) / SimConstants.CTRLS_SAMPLE_RATE_SEC;
+
+            updateDownfieldFlag();
+        }
+    }
+
+    public void drive(ChassisSpeeds chassisSpeeds) {
+      m_chassisSpeeds = chassisSpeeds;
+      states = Constants.DRIVE.KINEMATICS.toSwerveModuleStates(m_chassisSpeeds);
+    }
+
+    public SwerveModuleState[] getSwerveModuleStates() {
+      return states;
     }
 
     public Pose2d getCurActPose(){
@@ -127,10 +180,21 @@ public class SwerveDrivetrainModel {
         modelReset(pose);
     }
 
-    public void setSwerveVoltage(double voltage) {
-        for(int idx = 0; idx < QuadSwerveSim.NUM_MODULES; idx++){
+    public Pose2d getEstPose() {
+        return curEstPose;
+    }
 
-        }
+    public void setKnownPose(Pose2d in) {
+        resetWheelEncoders();
+        // No need to reset gyro, pose estimator does that.
+        m_poseEstimator.resetPosition(in, getGyroscopeRotation());
+        updateDownfieldFlag();
+        curEstPose = in;
+    }
+
+    public void updateDownfieldFlag() {
+      double curRotDeg = curEstPose.getRotation().getDegrees();
+      pointedDownfield = (curRotDeg > -90 && curRotDeg < 90);
     }
 
     public void zeroGyroscope() {
@@ -145,9 +209,15 @@ public class SwerveDrivetrainModel {
         if(RobotBase.isSimulation()){
             dtPoseView.setActualPose(getCurActPose());
         }
-        //dtPoseView.setEstimatedPose(dtpe.getEstPose());
+        dtPoseView.setEstimatedPose(getEstPose());
         //dtPoseView.setDesiredPose(getCurDesiredPose());
 
         dtPoseView.update(Timer.getFPGATimestamp()*1000);
+    }
+
+    public void resetWheelEncoders() {
+      for(int idx = 0; idx < QuadSwerveSim.NUM_MODULES; idx++){
+        realModules.get(idx).resetWheelEncoder();
+      }
     }
 }
