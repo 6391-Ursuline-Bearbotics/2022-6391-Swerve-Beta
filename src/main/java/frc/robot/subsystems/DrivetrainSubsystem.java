@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.Gyroscope;
 import frc.swervelib.GyroscopeHelper;
 import frc.swervelib.Mk4SwerveModuleHelper;
@@ -12,9 +11,9 @@ import frc.swervelib.sim.SwerveDrivetrainModel;
 import frc.wpiClasses.QuadSwerveSim;
 import frc.swervelib.SdsModuleConfigurations;
 import frc.swervelib.SwerveModule;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -170,9 +169,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
       m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
     }
+    dt.updateTelemetry();
   }
 
   @Override
   public void simulationPeriodic() {
+    dt.update(DriverStation.isDisabled(), 13.2);
   }
 }

@@ -37,18 +37,18 @@ public class DefaultDriveCommand extends CommandBase {
     public void execute() {
         switch (driverChooser.getSelected()) {
             case "Both Sticks":
-              m_translationX = modifyAxis(m_controller.JoystickLY());
-              m_translationY = modifyAxis(m_controller.JoystickLX());
+              m_translationX = modifyAxis(-m_controller.JoystickLY());
+              m_translationY = modifyAxis(-m_controller.JoystickLX());
               m_rotation = modifyAxis(m_controller.JoystickRX());
               break;
             case "Left Stick and Triggers":
-              m_translationX = modifyAxis(m_controller.JoystickLY());
-              m_translationY = modifyAxis(m_controller.JoystickLX());
+              m_translationX = modifyAxis(-m_controller.JoystickLY());
+              m_translationY = modifyAxis(-m_controller.JoystickLX());
               m_rotation = m_controller.TriggerCombined();
               break;
             case "Gas Pedal":
-              m_translationX = modifyAxis(m_controller.JoystickLY());
-              m_translationY = modifyAxis(m_controller.JoystickLX());
+              m_translationX = modifyAxis(-m_controller.JoystickLY());
+              m_translationY = modifyAxis(-m_controller.JoystickLX());
               double angle = calculateTranslationDirection(m_translationX, m_translationY);
               m_translationX = Math.cos(angle) * m_controller.TriggerR();
               m_translationY = Math.sin(angle) * m_controller.TriggerR();

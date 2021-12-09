@@ -1,7 +1,7 @@
 package frc.swervelib.ctre;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMUSimCollection;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.swervelib.Gyroscope;
@@ -9,16 +9,16 @@ import frc.swervelib.Gyroscope;
 public class PigeonFactoryBuilder {
     private static PigeonIMUSimCollection pigeonSim;
 
-    public Gyroscope build(PigeonIMU pigeon) {
+    public Gyroscope build(WPI_PigeonIMU pigeon) {
         return new GyroscopeImplementation(pigeon);
     }
 
     private static class GyroscopeImplementation implements Gyroscope {
-        private final PigeonIMU pigeon;
+        private final WPI_PigeonIMU pigeon;
 
-        private GyroscopeImplementation(PigeonIMU pigeon) {
+        private GyroscopeImplementation(WPI_PigeonIMU pigeon) {
             this.pigeon = pigeon;
-            pigeonSim = new PigeonIMUSimCollection(pigeon, true);
+            pigeonSim = pigeon.getSimCollection();
         }
 
         @Override
