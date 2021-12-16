@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.MoveForward;
 import frc.robot.lib.XboxController6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -29,7 +29,7 @@ public class RobotContainer {
     ));
 
     // Populate Auto Chooser
-    
+    autoChooser.setDefaultOption("Move Forward", new MoveForward(m_drivetrainSubsystem));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -54,6 +54,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    return autoChooser.getSelected();
   }
 }

@@ -5,7 +5,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
-import frc.robot.Constants;
+import frc.robot.Constants.DRIVE;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.AbsoluteEncoderFactory;
 
@@ -56,9 +56,9 @@ public class CanCoderFactoryBuilder {
         public void setAbsoluteEncoder(double position, double velocity) {
             // Position is in revolutions.  Velocity is in RPM
             // CANCoder wants steps for postion.  Steps per 100ms for velocity
-            encoder.getSimCollection().setRawPosition((int) (position * Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
+            encoder.getSimCollection().setRawPosition((int) (position * DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
             // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
-            encoder.getSimCollection().setVelocity((int) (velocity / 600 * Constants.DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
+            encoder.getSimCollection().setVelocity((int) (velocity / 600 * DRIVE.STEER_ENC_COUNTS_PER_MODULE_REV));
         }
     }
 

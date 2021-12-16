@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DRIVE;
 import frc.robot.lib.XboxController6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -56,19 +57,25 @@ public class DefaultDriveCommand extends CommandBase {
               break;
         }
 
-        m_drivetrainSubsystem.dt.drive(
+        m_drivetrainSubsystem.dt.setModuleStates(
+            DRIVE.KINEMATICS.toSwerveModuleStates(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
                         m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
                         m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
                         m_drivetrainSubsystem.dt.getGyroscopeRotation()
                 )
+            )    
         );
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.dt.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drivetrainSubsystem.dt.setModuleStates(
+          DRIVE.KINEMATICS.toSwerveModuleStates(  
+            new ChassisSpeeds(0.0, 0.0, 0.0)
+          )    
+        );
     }
 
   private static double modifyAxis(double value) {

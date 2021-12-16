@@ -20,9 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
-import static frc.robot.Constants.*;
+import frc.robot.Constants.DRIVE;
 
 import java.util.ArrayList;
 
@@ -143,7 +141,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DRIVE.BACK_RIGHT_MODULE_STEER_OFFSET
     );
 
-    Gyroscope gyro = GyroscopeHelper.createPigeonCAN(Constants.DRIVE.PIGEON_ID);
+    Gyroscope gyro = GyroscopeHelper.createPigeonCAN(DRIVE.PIGEON_ID);
 
     modules.add(m_frontLeftModule);
     modules.add(m_frontRightModule);
