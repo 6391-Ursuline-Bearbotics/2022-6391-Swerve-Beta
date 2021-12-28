@@ -14,4 +14,6 @@ public interface SteerController {
     double getStateAngle();
 
     double getOutputVoltage();
+
+    void setSteerEncoder(double position, double velocity);
 }

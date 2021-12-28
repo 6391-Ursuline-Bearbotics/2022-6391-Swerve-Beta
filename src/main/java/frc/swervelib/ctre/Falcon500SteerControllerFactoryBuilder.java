@@ -3,6 +3,8 @@ package frc.swervelib.ctre;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+
+import frc.robot.Constants.DRIVE;
 import frc.swervelib.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
@@ -192,6 +194,15 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
 
             this.referenceAngleRadians = referenceAngleRadians;
+        }
+
+        @Override
+        public void setSteerEncoder(double position, double velocity) {
+            // Position is in revolutions.  Velocity is in RPM
+            // CANCoder wants steps for postion.  Steps per 100ms for velocity
+            motor.getSimCollection().setIntegratedSensorRawPosition((int) (position * DRIVE.ENC_PULSE_PER_REV));
+            // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
+            motor.getSimCollection().setIntegratedSensorVelocity((int) (velocity / 600 * DRIVE.ENC_PULSE_PER_REV));
         }
 
         @Override

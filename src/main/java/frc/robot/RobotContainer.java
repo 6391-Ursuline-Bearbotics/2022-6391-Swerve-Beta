@@ -7,9 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.MoveForward;
+import frc.robot.commands.SemiCircle;
 import frc.robot.lib.XboxController6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -30,6 +32,8 @@ public class RobotContainer {
 
     // Populate Auto Chooser
     autoChooser.setDefaultOption("Move Forward", new MoveForward(m_drivetrainSubsystem));
+    autoChooser.addOption("Semi-Circle", new SemiCircle(m_drivetrainSubsystem));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the button bindings
     configureButtonBindings();

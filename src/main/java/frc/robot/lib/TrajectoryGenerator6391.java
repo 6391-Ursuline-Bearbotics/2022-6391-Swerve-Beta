@@ -268,11 +268,17 @@ public final class TrajectoryGenerator6391 {
   public static List<PoseWithCurvature> splinePointsFromSplines(Spline[] splines, ArrayList<Rotation2d> headings) {
     // Create the vector of spline points.
     var splinePoints = new ArrayList<PoseWithCurvature>();
+    Rotation2d startHeading = new Rotation2d();
 
     // Add the first point to the vector.
     splinePoints.add(splines[0].getPoint(0.0));
 
-    var startHeading = headings.remove(0);
+    // Store the first heading
+    if (!headings.isEmpty()) {
+      pointHeadings.add(headings.get(0));
+      startHeading = headings.remove(0);
+    }
+
     // Iterate through the vector and parameterize each spline, adding the
     // parameterized points to the final vector.
     for (int i = 0; i < splines.length; i++) {

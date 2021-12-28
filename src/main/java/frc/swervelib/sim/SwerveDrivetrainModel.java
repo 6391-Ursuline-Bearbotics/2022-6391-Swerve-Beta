@@ -153,6 +153,7 @@ public class SwerveDrivetrainModel {
             double steerVelocity = modules.get(idx).getAzimuthEncoderVelocityRPM();
             double wheelVelocity = modules.get(idx).getWheelEncoderVelocityRPM();
             realModules.get(idx).getAbsoluteEncoder().setAbsoluteEncoder(steerPos, steerVelocity);
+            realModules.get(idx).getSteerController().setSteerEncoder(steerPos, steerVelocity);
             realModules.get(idx).getDriveController().setDriveEncoder(wheelPos, wheelVelocity);
         }
 

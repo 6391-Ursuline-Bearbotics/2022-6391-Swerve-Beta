@@ -169,6 +169,12 @@ public final class NeoSteerControllerFactoryBuilder {
         }
 
         @Override
+        public void setSteerEncoder(double position, double velocity) {
+            motor.getEncoder().setPosition(position);
+            //motor.getEncoder()
+        }
+
+        @Override
         public double getStateAngle() {
             double motorAngleRadians = motorEncoder.getPosition();
             motorAngleRadians %= 2.0 * Math.PI;
