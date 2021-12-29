@@ -3,6 +3,9 @@ package frc.robot.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,7 +19,7 @@ import frc.robot.lib.TrajectoryGenerator6391;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class SemiCircle extends SequentialCommandGroup {
-  SwerveDriveKinematicsConstraint6391 constraint = new SwerveDriveKinematicsConstraint6391(DRIVE.KINEMATICS, DRIVE.MAX_FWD_REV_SPEED_MPS);
+/*   SwerveDriveKinematicsConstraint6391 constraint = new SwerveDriveKinematicsConstraint6391(DRIVE.KINEMATICS, DRIVE.MAX_FWD_REV_SPEED_MPS);
   TrajectoryConfig6391 config =
         new TrajectoryConfig6391(
                 AUTO.kMaxSpeedMetersPerSecond,
@@ -29,7 +32,7 @@ public class SemiCircle extends SequentialCommandGroup {
           Rotation2d.fromDegrees(180),
           Rotation2d.fromDegrees(90),
           Rotation2d.fromDegrees(0)));
-  Trajectory forward =
+  PathPlannerTrajectory forward =
         TrajectoryGenerator6391.generateTrajectory(
           List.of(
             // Start at the origin facing the +X direction
@@ -39,7 +42,10 @@ public class SemiCircle extends SequentialCommandGroup {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(7, 1, Rotation2d.fromDegrees(-45))),
             headings,
-            config);
+            config); */
+  
+  PathPlannerTrajectory forward = PathPlanner.loadPath("SemiCircle", 2.0, 3.0);
+          
   public SemiCircle(DrivetrainSubsystem m_drive) {
     addCommands(
       m_drive.dt.createCommandForTrajectory(forward, m_drive)

@@ -2,6 +2,8 @@ package frc.swervelib.sim;
 
 import java.util.ArrayList;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -10,16 +12,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AUTO;
 import frc.robot.Constants.DRIVE;
 import frc.robot.Constants.ROBOT;
+import frc.robot.lib.SwerveControllerCommandPP;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.wpiClasses.QuadSwerveSim;
 import frc.wpiClasses.SwerveModuleSim;
@@ -237,9 +238,9 @@ public class SwerveDrivetrainModel {
       }
     }
 
-    public Command createCommandForTrajectory(Trajectory trajectory, DrivetrainSubsystem m_drive) {
-        SwerveControllerCommand swerveControllerCommand =
-            new SwerveControllerCommand(
+    public Command createCommandForTrajectory(PathPlannerTrajectory trajectory, DrivetrainSubsystem m_drive) {
+        SwerveControllerCommandPP swerveControllerCommand =
+            new SwerveControllerCommandPP(
                 trajectory,
                 () -> getCurActPose(), // Functional interface to feed supplier
                 DRIVE.KINEMATICS,
