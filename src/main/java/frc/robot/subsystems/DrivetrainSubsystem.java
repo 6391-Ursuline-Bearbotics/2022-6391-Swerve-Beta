@@ -13,6 +13,7 @@ import frc.swervelib.SdsModuleConfigurations;
 import frc.swervelib.SwerveModule;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -104,7 +105,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             // This is the ID of the steer encoder
             DRIVE.FRONT_LEFT_MODULE_STEER_ENCODER,
             // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
-            DRIVE.FRONT_LEFT_MODULE_STEER_OFFSET
+            DRIVE.FRONT_LEFT_MODULE_STEER_OFFSET, "FL"
     );
 
     // We will do the same for the other modules
@@ -116,7 +117,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DRIVE.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             DRIVE.FRONT_RIGHT_MODULE_STEER_MOTOR,
             DRIVE.FRONT_RIGHT_MODULE_STEER_ENCODER,
-            DRIVE.FRONT_RIGHT_MODULE_STEER_OFFSET
+            DRIVE.FRONT_RIGHT_MODULE_STEER_OFFSET, "FR"
     );
 
     m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -127,7 +128,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DRIVE.BACK_LEFT_MODULE_DRIVE_MOTOR,
             DRIVE.BACK_LEFT_MODULE_STEER_MOTOR,
             DRIVE.BACK_LEFT_MODULE_STEER_ENCODER,
-            DRIVE.BACK_LEFT_MODULE_STEER_OFFSET
+            DRIVE.BACK_LEFT_MODULE_STEER_OFFSET, "BL"
     );
 
     m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -138,7 +139,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DRIVE.BACK_RIGHT_MODULE_DRIVE_MOTOR,
             DRIVE.BACK_RIGHT_MODULE_STEER_MOTOR,
             DRIVE.BACK_RIGHT_MODULE_STEER_ENCODER,
-            DRIVE.BACK_RIGHT_MODULE_STEER_OFFSET
+            DRIVE.BACK_RIGHT_MODULE_STEER_OFFSET, "BR"
     );
 
     Gyroscope gyro = GyroscopeHelper.createPigeonCAN(DRIVE.PIGEON_ID);
@@ -166,6 +167,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
       m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
       m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+
+
     }
     dt.updateTelemetry();
   }

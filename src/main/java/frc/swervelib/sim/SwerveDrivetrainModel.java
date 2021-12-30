@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -63,10 +64,10 @@ public class SwerveDrivetrainModel {
         this.realModules = realModules;
 
         if (RobotBase.isSimulation()) {
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0), "FL"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1), "FR"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2), "BL"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3), "BR"));
         }
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
