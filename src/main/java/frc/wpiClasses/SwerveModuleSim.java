@@ -3,6 +3,9 @@ package frc.wpiClasses;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class SwerveModuleSim {
 
@@ -27,6 +30,13 @@ public class SwerveModuleSim {
     double wheelVoltage;
     double steerVoltage;
 
+    private ShuffleboardTab tab = Shuffleboard.getTab("SimSwerve");
+    private NetworkTableEntry azmthVoltageEntry;
+    private NetworkTableEntry wheelVoltageEntry;
+    private NetworkTableEntry azmthSpeedEntry;
+    private NetworkTableEntry azmthPosEntry;
+    private NetworkTableEntry wheelSpeedEntry;
+
     public SwerveModuleSim(
         DCMotor azimuthMotor,
         DCMotor driveMotor, 
@@ -38,7 +48,8 @@ public class SwerveModuleSim {
         double treadStaticCoefFric,
         double treadKineticCoefFric,
         double moduleNormalForce,
-        double azimuthEffectiveMOI
+        double azimuthEffectiveMOI,
+        String namePrefix
     ){
         this.steerMotor = new SimpleMotorWithMassModel(azimuthMotor, azimuthGearRatio, azimuthEffectiveMOI);
         this.driveMotor = new MotorGearboxWheelSim(driveMotor, wheelGearRatio, wheelRadius_m, wheelGearboxLossFactor);
@@ -47,11 +58,25 @@ public class SwerveModuleSim {
         this.wheelEncGearRatio     = wheelEncGearRatio;   
         this.treadStaticFricForce  = treadStaticCoefFric*moduleNormalForce;
         this.treadKineticFricForce = treadKineticCoefFric*moduleNormalForce; 
+
+        this.azmthVoltageEntry = tab.add(namePrefix + "Azmth Voltage V", 0).getEntry();
+        this.wheelVoltageEntry = tab.add(namePrefix + "Wheel Voltage V", 0).getEntry();
+        this.azmthSpeedEntry = tab.add(namePrefix + "Azmth Speed RPM", 0).getEntry();
+        this.azmthPosEntry = tab.add(namePrefix + "Azmth Pos Deg", 0).getEntry();
+        this.wheelSpeedEntry = tab.add(namePrefix + "Wheel Speed RPM", 0).getEntry(); 
     }
 
     public void setInputVoltages(double wheelVoltage, double steerVoltage){
         this.wheelVoltage = wheelVoltage;
         this.steerVoltage = steerVoltage;
+    }
+
+    public double getAzimuthMotorPositionRev(){
+        return steerMotor.getMotorPosition_Rev();
+    }
+
+    public double getAzimuthMotorVelocityRPM(){
+        return steerMotor.getMotorSpeed_RPM();
     }
 
     public double getAzimuthEncoderPositionRev(){
@@ -89,6 +114,12 @@ public class SwerveModuleSim {
 
         // Assume idealized azimuth control - no "twist" force at contact patch from friction or robot motion.
         cursteerAngle = Rotation2d.fromDegrees(steerMotor.getMechanismPosition_Rev() * 360);
+
+        this.azmthVoltageEntry.setDouble(steerVoltage);
+        this.wheelVoltageEntry.setDouble(wheelVoltage);
+        this.azmthSpeedEntry.setDouble(steerMotor.getMechanismSpeed_RPM());
+        this.azmthPosEntry.setDouble(steerMotor.getMechanismPosition_Rev()*360.0);
+        this.wheelSpeedEntry.setDouble(driveMotor.wheelSpeed_RPM);
     }
 
     

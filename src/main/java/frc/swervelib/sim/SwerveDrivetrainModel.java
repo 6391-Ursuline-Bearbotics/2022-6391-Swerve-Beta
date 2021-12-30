@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AUTO;
@@ -64,10 +65,10 @@ public class SwerveDrivetrainModel {
         this.realModules = realModules;
 
         if (RobotBase.isSimulation()) {
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2)));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0), "FL"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1), "FR"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2), "BL"));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3), "BR"));
         }
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -149,12 +150,16 @@ public class SwerveDrivetrainModel {
 
         // Update each encoder
         for(int idx = 0; idx < QuadSwerveSim.NUM_MODULES; idx++){
-            double steerPos = modules.get(idx).getAzimuthEncoderPositionRev();
+            double azmthShaftPos = modules.get(idx).getAzimuthEncoderPositionRev();
+            double steerMotorPos = modules.get(idx).getAzimuthMotorPositionRev();
             double wheelPos = modules.get(idx).getWheelEncoderPositionRev();
-            double steerVelocity = modules.get(idx).getAzimuthEncoderVelocityRPM();
+
+            double azmthShaftVel = modules.get(idx).getAzimuthEncoderVelocityRPM();
+            double steerVelocity = modules.get(idx).getAzimuthMotorVelocityRPM();
             double wheelVelocity = modules.get(idx).getWheelEncoderVelocityRPM();
-            realModules.get(idx).getAbsoluteEncoder().setAbsoluteEncoder(steerPos, steerVelocity);
-            realModules.get(idx).getSteerController().setSteerEncoder(steerPos, steerVelocity);
+
+            realModules.get(idx).getAbsoluteEncoder().setAbsoluteEncoder(azmthShaftPos, azmthShaftVel);
+            realModules.get(idx).getSteerController().setSteerEncoder(steerMotorPos, steerVelocity);
             realModules.get(idx).getDriveController().setDriveEncoder(wheelPos, wheelVelocity);
         }
 

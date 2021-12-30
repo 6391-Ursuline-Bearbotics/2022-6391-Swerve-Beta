@@ -1,6 +1,9 @@
 package frc.swervelib;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
     private final ModuleConfiguration moduleConfiguration;
@@ -15,14 +18,14 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         this.steerControllerFactory = steerControllerFactory;
     }
 
-    public SwerveModule create(DriveConfiguration driveConfiguration, SteerConfiguration steerConfiguration) {
+    public SwerveModule create(DriveConfiguration driveConfiguration, SteerConfiguration steerConfiguration, String namePrefix) {
         var driveController = driveControllerFactory.create(driveConfiguration, moduleConfiguration);
         var steerController = steerControllerFactory.create(steerConfiguration, moduleConfiguration);
 
-        return new ModuleImplementation(driveController, steerController);
+        return new ModuleImplementation(driveController, steerController, namePrefix);
     }
 
-    public SwerveModule create(ShuffleboardLayout container, DriveConfiguration driveConfiguration, SteerConfiguration steerConfiguration) {
+    public SwerveModule create(ShuffleboardLayout container, DriveConfiguration driveConfiguration, SteerConfiguration steerConfiguration, String namePrefix) {
         var driveController = driveControllerFactory.create(
                 container,
                 driveConfiguration,
@@ -34,16 +37,26 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
                 moduleConfiguration
         );
 
-        return new ModuleImplementation(driveController, steerContainer);
+        return new ModuleImplementation(driveController, steerContainer,namePrefix);
     }
 
     private class ModuleImplementation implements SwerveModule {
         private final DriveController driveController;
         private final SteerController steerController;
 
-        private ModuleImplementation(DriveController driveController, SteerController steerController) {
+        
+        private ShuffleboardTab tab = Shuffleboard.getTab("SwerveDt");
+        private NetworkTableEntry driveVoltageCmdEntry;
+        private NetworkTableEntry steerAngleCmdEntry;
+
+        private ModuleImplementation(DriveController driveController, SteerController steerController, String namePrefix) {
             this.driveController = driveController;
             this.steerController = steerController;
+
+            this.driveVoltageCmdEntry = tab.add(namePrefix + "Wheel Voltage Cmd V", 0).getEntry();
+            this.steerAngleCmdEntry = tab.add(namePrefix + "Azmth Des Angle Deg", 0).getEntry();
+    
+    
         }
 
         @Override
@@ -81,6 +94,7 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
             return steerController.getAbsoluteEncoder();
         }
 
+        
         @Override
         public void set(double driveVoltage, double steerAngle) {
             steerAngle %= (2.0 * Math.PI);
@@ -113,6 +127,9 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
 
             driveController.setReferenceVoltage(driveVoltage);
             steerController.setReferenceAngle(steerAngle);
+
+            this.driveVoltageCmdEntry.setDouble(driveVoltage);
+            this.steerAngleCmdEntry.setDouble(steerAngle*180/Math.PI);
         }
     }
 }
