@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import frc.robot.Robot;
 import frc.robot.Constants.DRIVE;
 import frc.swervelib.*;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -131,11 +132,15 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
             checkCtreError(motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / sensorPositionCoefficient, 0, CAN_TIMEOUT_MS), "Failed to set Falcon 500 encoder position");
 
-            // Reduce CAN status frame rates
+            
+
+            // Reduce CAN status frame rates on real robots
+            // Don't do this in simulation, or it causes lag and quantization of the voltage
+            // signals which cause the sim model to be inaccurate and unstable.
             CtreUtils.checkCtreError(
                     motor.setStatusFramePeriod(
                             StatusFrameEnhanced.Status_1_General,
-                            STATUS_FRAME_GENERAL_PERIOD_MS,
+                            Robot.isSimulation()?20:STATUS_FRAME_GENERAL_PERIOD_MS,
                             CAN_TIMEOUT_MS
                     ),
                     "Failed to configure Falcon status frame period"
