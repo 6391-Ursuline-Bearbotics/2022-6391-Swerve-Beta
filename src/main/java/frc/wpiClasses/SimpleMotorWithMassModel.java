@@ -7,6 +7,8 @@ class SimpleMotorWithMassModel {
     
     double curDisplacement_Rev;
 
+    private final double gearing;
+
     FlywheelSim fwSim;
 
     /**
@@ -17,6 +19,7 @@ class SimpleMotorWithMassModel {
      */
     SimpleMotorWithMassModel(DCMotor motor, double gearing, double moi){
         fwSim = new FlywheelSim(motor, gearing, moi);
+        this.gearing = gearing;
     }
 
     void update(double motorVoltage, double dtSeconds){
@@ -49,5 +52,19 @@ class SimpleMotorWithMassModel {
         return curDisplacement_Rev;
     }
 
+    /**
+     * 
+     * @return The present motor shaft displacement in Revolutions
+     */
+    double getMotorPosition_Rev(){
+        return curDisplacement_Rev * gearing;
+    }
 
+    /**
+     * 
+     * @return The present motor shaft speed
+     */
+    double getMotorSpeed_RPM(){
+        return fwSim.getAngularVelocityRPM() * gearing;
+    }
 }

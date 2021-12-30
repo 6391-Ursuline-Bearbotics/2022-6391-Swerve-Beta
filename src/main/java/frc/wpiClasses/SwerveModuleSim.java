@@ -71,6 +71,14 @@ public class SwerveModuleSim {
         this.steerVoltage = steerVoltage;
     }
 
+    public double getAzimuthMotorPositionRev(){
+        return steerMotor.getMotorPosition_Rev();
+    }
+
+    public double getAzimuthMotorVelocityRPM(){
+        return steerMotor.getMotorSpeed_RPM();
+    }
+
     public double getAzimuthEncoderPositionRev(){
         return steerMotor.getMechanismPosition_Rev() * azimuthEncGearRatio;
     }
