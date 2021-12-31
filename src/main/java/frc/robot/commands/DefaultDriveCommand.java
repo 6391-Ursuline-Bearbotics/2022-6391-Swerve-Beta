@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DRIVE;
 import frc.robot.lib.XboxController6391;
@@ -25,11 +26,14 @@ public class DefaultDriveCommand extends CommandBase {
         // Control Scheme Chooser
         driverChooser.setDefaultOption("Both Sticks", "Both Sticks");
         driverChooser.addOption("Left Stick and Triggers", "Left Stick and Triggers");
+        driverChooser.addOption("Split Sticks and Triggers", "Split Sticks and Triggers");
         driverChooser.addOption("Gas Pedal", "Gas Pedal");
+        SmartDashboard.putData("Driver Chooser", driverChooser);
 
         // Control Orientation Chooser
         orientationChooser.setDefaultOption("Field Oriented", "Field Oriented");
         orientationChooser.addOption("Robot Oriented", "Robot Oriented");
+        SmartDashboard.putData("Orientation Chooser", orientationChooser);
 
         addRequirements(drivetrainSubsystem);
     }
@@ -40,11 +44,16 @@ public class DefaultDriveCommand extends CommandBase {
             case "Both Sticks":
               m_translationX = modifyAxis(-m_controller.JoystickLY());
               m_translationY = modifyAxis(-m_controller.JoystickLX());
-              m_rotation = modifyAxis(m_controller.JoystickRX());
+              m_rotation = modifyAxis(-m_controller.JoystickRX());
               break;
             case "Left Stick and Triggers":
               m_translationX = modifyAxis(-m_controller.JoystickLY());
               m_translationY = modifyAxis(-m_controller.JoystickLX());
+              m_rotation = m_controller.TriggerCombined();
+              break;
+            case "Split Sticks and Triggers":
+              m_translationX = modifyAxis(-m_controller.JoystickLY());
+              m_translationY = modifyAxis(-m_controller.JoystickRX());
               m_rotation = m_controller.TriggerCombined();
               break;
             case "Gas Pedal":
@@ -57,16 +66,31 @@ public class DefaultDriveCommand extends CommandBase {
               break;
         }
 
-        m_drivetrainSubsystem.dt.setModuleStates(
-            DRIVE.KINEMATICS.toSwerveModuleStates(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                        m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                        m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-                        m_drivetrainSubsystem.dt.getGyroscopeRotation()
-                )
-            )    
-        );
+        switch (orientationChooser.getSelected()) {
+          case "Field Oriented":
+            m_drivetrainSubsystem.dt.setModuleStates(
+                DRIVE.KINEMATICS.toSwerveModuleStates(
+                    ChassisSpeeds.fromFieldRelativeSpeeds(
+                            m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                            m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                            m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                            m_drivetrainSubsystem.dt.getGyroscopeRotation()
+                    )
+                )    
+            );
+            break;
+          case "Robot Oriented":
+            m_drivetrainSubsystem.dt.setModuleStates(
+              DRIVE.KINEMATICS.toSwerveModuleStates(
+                  new ChassisSpeeds(
+                          m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                          m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                          m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                  )
+              )    
+            );
+            break;
+        }
     }
 
     @Override
